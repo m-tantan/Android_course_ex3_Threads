@@ -12,6 +12,9 @@ import android.widget.TextView;
 
 public class ThreadsActivity extends AppCompatActivity
 {
+    public static final int UPDATE_COUNTER = 1;
+    public static final int SLEEP = 2;
+    public static final int PRINT_DONE = 3;
     long TIME_TO_WAIT = 10000; // 10 seconds
     ImageButton btnStart, btnCreate, btnDelete;
     TextView tvWindow;
@@ -20,7 +23,7 @@ public class ThreadsActivity extends AppCompatActivity
     Thread mThread;
     long endTime;
     Handler mHandler;
-    int seconds = 0;
+    int seconds = 0, nextNum;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState)
@@ -37,15 +40,23 @@ public class ThreadsActivity extends AppCompatActivity
             @Override
             public void handleMessage(Message msg)
             {
-                if (seconds < 10)
+                int what = msg.arg1;
+                switch (what)
                 {
-                    tvWindow.setText(String.valueOf(seconds));
-                    seconds++;
+                    case SLEEP:
+                        tvWindow.setText("");
+                        break;
+                    case UPDATE_COUNTER:
+                        tvWindow.setText(String.valueOf(seconds));
+                        seconds++;
+                        break;
+                    case PRINT_DONE:
+                        tvWindow.setText("DONE");
+                        break;
+                    default:
+                        break;
                 }
-                else
-                {
-                    tvWindow.setText("DONE");
-                }
+
             }
         };
     }
@@ -68,17 +79,24 @@ public class ThreadsActivity extends AppCompatActivity
                 Log.e("Debug", "one second passed");
                 try
                 {
-                    Thread.sleep(1000);
-                    mHandler.sendEmptyMessage(0);
+                    // Updates timer
+                    Thread.sleep(500);
+                    Message msg = new Message();
+                    msg.arg1 = UPDATE_COUNTER;
+                    mHandler.sendMessage(msg);
+                    // Clears TextView
+                    Thread.sleep(500);
+                    Message msg2 = new Message();
+                    msg2.arg1 = SLEEP;
+                    mHandler.sendMessage(msg2);
                 } catch (InterruptedException d)
                 {
                     d.printStackTrace();
                 }
             }
-            if (seconds == 10)
-            {
-                mHandler.sendEmptyMessage(0);
-            }
+            Message msg3 = new Message();
+            msg3.arg1 = PRINT_DONE;
+            mHandler.sendMessage(msg3);
             Log.e("Debug", "Thread finished");
         }
     };
@@ -95,8 +113,16 @@ public class ThreadsActivity extends AppCompatActivity
     {
         Log.e("Debug", "Started Thread");
         seconds = 0;
-        tRunning = true;
-        mThread.start();
+        if (!tRunning)
+        {
+            tRunning = true;
+            mThread.start();
+        }
+        else
+        {
+            Log.e("Debug", "Started already running");
+
+        }
     }
 
     public void terminateThread(View v)

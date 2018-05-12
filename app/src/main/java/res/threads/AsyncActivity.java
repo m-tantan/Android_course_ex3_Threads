@@ -3,9 +3,12 @@ package res.threads;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.View;
 import android.widget.ImageButton;
 import android.widget.TextView;
+
+import static android.support.constraint.Constraints.TAG;
 
 public class AsyncActivity extends AppCompatActivity
 {
@@ -26,14 +29,16 @@ public class AsyncActivity extends AppCompatActivity
 
     public void AsyncCreate(View view)
     {
+        Log.e(TAG, "Creating AsyncThread");
         asyncThread = new myAsyncThread(AsyncActivity.this, btnCreate, btnStart, btnDelete, textView);
     }
     public void AsyncStart(View view)
     {
-
+        Log.e(TAG, "Starting AsyncThread");
+        asyncThread.execute();
     }
     public void AsyncDelete(View view)
     {
-
+        asyncThread.terminate();
     }
 }
