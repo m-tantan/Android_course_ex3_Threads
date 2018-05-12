@@ -47,8 +47,8 @@ public class ThreadsActivity extends AppCompatActivity
                         tvWindow.setText("");
                         break;
                     case UPDATE_COUNTER:
-                        tvWindow.setText(String.valueOf(seconds));
                         seconds++;
+                        tvWindow.setText(String.valueOf(seconds));
                         break;
                     case PRINT_DONE:
                         tvWindow.setText("DONE");
@@ -72,9 +72,10 @@ public class ThreadsActivity extends AppCompatActivity
             while (tRunning)
             {
                 currentTime = System.currentTimeMillis();
-                if (currentTime > endTime)
+                if (currentTime >= endTime)
                 {
                     tRunning = false;
+                    break;
                 }
                 Log.e("Debug", "one second passed");
                 try
