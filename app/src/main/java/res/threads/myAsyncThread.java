@@ -2,16 +2,17 @@ package res.threads;
 
 import android.content.Context;
 import android.os.AsyncTask;
-import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.TextView;
 
 public class myAsyncThread extends AsyncTask<Void, Integer, String>
 {
-    Button btnCreate, btnStart, btnDelete;
+    ImageButton btnCreate, btnStart, btnDelete;
     TextView textView;
-
-    public myAsyncThread(Context context, Button btnCreate, Button btnStart, Button btnDelete, TextView textView)
+    Context context;
+    public myAsyncThread(Context context, ImageButton btnCreate, ImageButton btnStart, ImageButton btnDelete, TextView textView)
     {
+        this.context = context;
         this.btnCreate = btnCreate;
         this.btnStart = btnStart;
         this.btnDelete = btnDelete;
@@ -20,8 +21,22 @@ public class myAsyncThread extends AsyncTask<Void, Integer, String>
 
     @Override
     protected String doInBackground(Void... voids)
-    {
-        return null;
+    {   int counter = 0;
+        synchronized (this)
+        {
+            while (counter < 10)
+            {
+                try
+                {
+                    wait(1000);
+                    counter++;
+                } catch (InterruptedException e)
+                {
+                    e.printStackTrace();
+                }
+            }
+        }
+        return "DONE";
     }
 
     @Override
@@ -33,12 +48,16 @@ public class myAsyncThread extends AsyncTask<Void, Integer, String>
     @Override
     protected void onPostExecute(String s)
     {
-        super.onPostExecute(s);
+        textView.setText(s);
     }
 
     @Override
     protected void onProgressUpdate(Integer... values)
     {
         super.onProgressUpdate(values);
+        int progress = values[0];
+        textView.setText(progress);
+
+
     }
 }
