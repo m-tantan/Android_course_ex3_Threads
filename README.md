@@ -1,4 +1,4 @@
-# Android_course_ex3_Threads
+# Andoird Threading
 PostPCex3
 
 This repo is an exercise for a course in the university Post PC.
